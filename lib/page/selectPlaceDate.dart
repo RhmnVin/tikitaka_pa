@@ -1,6 +1,12 @@
 // ignore_for_file: prefer_const_literals_to_create_immutables, prefer_const_constructors, sort_child_properties_last
 
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:utsmobile/Booking_provider.dart';
+import 'package:utsmobile/Olah_data.dart';
+
+import '../api.dart';
+import '../models/booking.dart';
 
 class selectPlaceDate extends StatefulWidget {
   const selectPlaceDate({super.key});
@@ -12,11 +18,23 @@ class selectPlaceDate extends StatefulWidget {
 class _selectPlaceDateState extends State<selectPlaceDate> {
   @override
   Widget build(BuildContext context) {
+    final book = Provider.of<Bookingg>(context, listen: false);
+    final data = Provider.of<olahData>(context, listen: false);
+    final movie = Provider.of<TmdbApi>(context, listen: false);
+
+    Booking bookMovie = book.myBooking;
+    bookMovie.id_login = data.idlogin;
+    bookMovie.posterUrl = movie.myMovie.posterUrl;
+    bookMovie.judul_film = movie.myMovie.title;
+    bookMovie.id_order = 'ID-${book.generateRandomId(8)}';
+
     return Scaffold(
       appBar: AppBar(
         leading: InkWell(
-          onLongPress: () {},
-          child: Image.asset("assets/back.png"),
+          onTap: () {
+            Navigator.pushNamed(context, "/movedetails");
+          },
+          child: Image.asset("asset/back.png"),
         ),
         titleSpacing: 50,
         backgroundColor: Color.fromARGB(255, 149, 0, 194),
@@ -62,14 +80,15 @@ class _selectPlaceDateState extends State<selectPlaceDate> {
               ],
             ),
             Row(
-              mainAxisAlignment: MainAxisAlignment
-                  .spaceAround,  
+              mainAxisAlignment: MainAxisAlignment.spaceAround,  
               children: [
                 GestureDetector(
+                  
                   onTap: () {
-                   
+                      bookMovie.tanggal = 'Saturday, 21 November 2023';
                   },
                   child: Column(
+                    
                     children: [
                       Container(
                           width: 60,
@@ -85,7 +104,7 @@ class _selectPlaceDateState extends State<selectPlaceDate> {
                                 "SAT",
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
-                                  fontSize: 20,
+                                  fontSize: 15,
                                   fontFamily: 'Railway',
                                   color: Colors.white,
                                 ),
@@ -109,7 +128,8 @@ class _selectPlaceDateState extends State<selectPlaceDate> {
                 ),
                 GestureDetector(
                   onTap: () {
-            
+                      bookMovie.tanggal = 'Sunday, 22 November 2023';
+
                   },
                   child: Column(
                     children: [
@@ -127,7 +147,7 @@ class _selectPlaceDateState extends State<selectPlaceDate> {
                               "SUN",
                               textAlign: TextAlign.center,
                               style: TextStyle(
-                                fontSize: 20,
+                                fontSize: 15,
                                 fontFamily: 'Railway',
                                 color: Colors.white,
                               ),
@@ -152,7 +172,8 @@ class _selectPlaceDateState extends State<selectPlaceDate> {
                 ),
                 GestureDetector(
                   onTap: () {
-                  
+                      bookMovie.tanggal = 'Monday, 23 November 2023';
+
                   },
                   child: Column(
                     children: [
@@ -170,7 +191,7 @@ class _selectPlaceDateState extends State<selectPlaceDate> {
                                 "MON",
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
-                                  fontSize: 17,
+                                  fontSize: 15,
                                   fontFamily: 'Railway',
                                   color: Colors.white,
                                 ),
@@ -193,7 +214,9 @@ class _selectPlaceDateState extends State<selectPlaceDate> {
                   ),
                 ),
                 GestureDetector(
-                  onTap: () {
+                  onTap: () { 
+                      bookMovie.tanggal = 'Tuesday, 24 November 2023';
+
                 
                   },
                   child: Column(
@@ -212,7 +235,7 @@ class _selectPlaceDateState extends State<selectPlaceDate> {
                                 "TUE",
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
-                                  fontSize: 20,
+                                  fontSize: 15,
                                   fontFamily: 'Railway',
                                   color: Colors.white,
                                 ),
@@ -297,7 +320,8 @@ class _selectPlaceDateState extends State<selectPlaceDate> {
               children: [
                 GestureDetector(
                   onTap: () {
-                
+                      bookMovie.tempat = "CGV Samarinda Plaza Mall";
+                      bookMovie.waktu = '16.00';
                   },
                   child: Column(
                     children: [
@@ -327,7 +351,8 @@ class _selectPlaceDateState extends State<selectPlaceDate> {
                 ),
                 GestureDetector(
                   onTap: () {
-      
+                     bookMovie.tempat = "CGV Samarinda Plaza Mall";
+                    bookMovie.waktu = '19.00';
                   },
                   child: Column(
                     children: [
@@ -358,7 +383,8 @@ class _selectPlaceDateState extends State<selectPlaceDate> {
                 ),
                 GestureDetector(
                   onTap: () {
-             
+                     bookMovie.tempat = "CGV Samarinda Plaza Mall";
+                      bookMovie.waktu = '22.00';
                   },
                   child: Column(
                     children: [
@@ -423,7 +449,8 @@ class _selectPlaceDateState extends State<selectPlaceDate> {
               children: [
                 GestureDetector(
                   onTap: () {
-      
+                      bookMovie.tempat = "XXI BIGMALL Samarinda";
+                      bookMovie.waktu = '16.00';
                   },
                   child: Column(
                     children: [
@@ -453,7 +480,8 @@ class _selectPlaceDateState extends State<selectPlaceDate> {
                 ),
                 GestureDetector(
                   onTap: () {
-               
+                      bookMovie.tempat = "XXI BIGMALL Samarinda";
+                      bookMovie.waktu = '19.00';
                   },
                   child: Column(
                     children: [
@@ -484,7 +512,8 @@ class _selectPlaceDateState extends State<selectPlaceDate> {
                 ),
                 GestureDetector(
                   onTap: () {
-           
+                       bookMovie.tempat = "XXI BIGMALL Samarinda";
+                      bookMovie.waktu = '22.00';
                   },
                   child: Column(
                     children: [
@@ -549,7 +578,8 @@ class _selectPlaceDateState extends State<selectPlaceDate> {
               children: [
                 GestureDetector(
                   onTap: () {
-                 
+                      bookMovie.tempat = "XXI City Centrum Samarinda";
+                      bookMovie.waktu = '16.00';
                   },
                   child: Column(
                     children: [
@@ -579,7 +609,8 @@ class _selectPlaceDateState extends State<selectPlaceDate> {
                 ),
                 GestureDetector(
                   onTap: () {
-                  
+                     bookMovie.tempat = "XXI City Centrum Samarinda";
+                      bookMovie.waktu = '19.00';
                   },
                   child: Column(
                     children: [
@@ -610,7 +641,8 @@ class _selectPlaceDateState extends State<selectPlaceDate> {
                 ),
                 GestureDetector(
                   onTap: () {
-       
+                      bookMovie.tempat = "XXI City Centrum Samarinda";
+                      bookMovie.waktu = '22.00';
                   },
                   child: Column(
                     children: [
@@ -649,7 +681,9 @@ class _selectPlaceDateState extends State<selectPlaceDate> {
                   width: 35,
                 ),
                 InkWell(
-                  onTap: () {},
+                  onTap: () {
+                    Navigator.pushNamed(context,'/movedetails');
+                  },
                   child: Text(
                     "Continue to Select Seat",
                     style: TextStyle(
@@ -666,8 +700,11 @@ class _selectPlaceDateState extends State<selectPlaceDate> {
                 IconButton(
                   icon: const Icon(Icons.arrow_circle_right_rounded),
                   color: Colors.blue,
-                  iconSize: 80,
+                  iconSize: 40,
                   onPressed: () {
+                    Navigator.pushNamed(context,'/selectseat');
+                    // print(bookMovie.id_order);
+
                     setState(() {});
                   }, 
                 ),

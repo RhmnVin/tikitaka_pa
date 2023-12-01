@@ -3,30 +3,39 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:utsmobile/Olah_data.dart';
+import 'package:utsmobile/page/bottonav.dart';
 import 'package:utsmobile/page/user_profile.dart';
 import 'dart:html' as html;
 import 'dart:typed_data';
 
 
-class SignUpPage extends StatefulWidget {
+class edit_profile extends StatefulWidget {
   @override
-  _SignUpPageState createState() => _SignUpPageState();
-   
- 
+  _edit_profileState createState() => _edit_profileState();
 }
 
-class _SignUpPageState extends State<SignUpPage> {
-  final TextEditingController _username = TextEditingController();
-  final TextEditingController _email = TextEditingController();
-  final TextEditingController _pass = TextEditingController();
-  final TextEditingController _conpass = TextEditingController();
-   Uint8List? _image;
+class _edit_profileState extends State<edit_profile> {
+   TextEditingController _username = TextEditingController();
+   TextEditingController _email = TextEditingController();
+   TextEditingController _pass = TextEditingController();
+   TextEditingController _conpass = TextEditingController();
+    Uint8List? _image;
     String namaFile ='';
+
 
    @override
   void initState() {
     super.initState();
     // Lakukan inisialisasi atau langganan sumber daya di sini
+  }
+
+   Future<List<String>> fetchData() async {
+    final data = Provider.of<olahData>(context, listen: false);
+    // Contoh penundaan untuk mensimulasikan operasi async
+    List<String> edit = [];
+    edit.add(await data.getFieldById("username", data.idlogin));
+    edit.add(await data.getFieldById("pass", data.idlogin));
+    return edit;
   }
 
   @override
@@ -37,7 +46,7 @@ class _SignUpPageState extends State<SignUpPage> {
     super.dispose(); 
   }
 
-  Future<void> _uploadImage() async {
+   Future<void> _uploadImage() async {
     
     // final html.InputElement input = html.FileUploadInputElement()..accept = 'image/*';
     final html.FileUploadInputElement input = html.FileUploadInputElement();
@@ -60,13 +69,19 @@ class _SignUpPageState extends State<SignUpPage> {
     });
   }
  
- 
 
 
   @override
   Widget build(BuildContext context) {
     final data = Provider.of<olahData>(context, listen: false);
-
+    fetchData().then((result) {
+        _username.text = result.first;
+        _pass.text =result.last;
+    });
+    data.setDataIndex(2);
+    FirebaseFirestore db = FirebaseFirestore.instance;
+    CollectionReference users = db.collection("users");
+  
     
     //  DocumentReference doc = doc.id;
 
@@ -75,7 +90,7 @@ class _SignUpPageState extends State<SignUpPage> {
         leading: InkWell(
           onTap: () async {
             await data.signOut();
-            Navigator.pushNamed(context, "/signin");
+            Navigator.pushNamed(context, "/bottomnav");
 
           },
           child: Image.asset("asset/back.png"),
@@ -119,17 +134,10 @@ class _SignUpPageState extends State<SignUpPage> {
               Column(
                 children: [
                   Text(
-                    'Create Your',
+                    'Edit Profile',
                     style: TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                    ),
-                  ),
-                  Text(
-                    'Account',
-                    style: TextStyle(
-                      fontSize: 18,
                       color: Colors.white,
                     ),
                   ),
@@ -160,22 +168,7 @@ class _SignUpPageState extends State<SignUpPage> {
                         fillColor: Color.fromARGB(255, 102, 80, 202),
                       ),
                     ),
-                    SizedBox(height: 10),
-                    Text(
-                      'Email Address',
-                      style: TextStyle(fontSize: 16, color: Colors.white),
-                    ),
-                    TextFormField(
-                      controller: _email,
-                      decoration: InputDecoration(
-                        hintText: 'Type Here',
-                        hintStyle:
-                            TextStyle(color: Color.fromARGB(255, 92, 195, 232)),
-                        border: OutlineInputBorder(),
-                        filled: true,
-                        fillColor: Color.fromARGB(255, 102, 80, 202),
-                      ),
-                    ),
+                   
                     SizedBox(height: 10),
                     Text(
                       'Password',
@@ -211,66 +204,47 @@ class _SignUpPageState extends State<SignUpPage> {
                   ],
                 ),
               ),
-              SizedBox(height: 20),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  TextButton(
-                    onPressed: () async {
-                      // if (data.userAuth != null){
-                      //    data.signOut();
-                      // }
-                      
-                      if(_pass.text == _conpass.text){
-                        data.signUp(_email.text, _pass.text);
-                       
-                        if (data.userAuth != null){
-                         
-                          print(_email.text);
-                          if(data.userAuth!.email == _email.text){
-                            final ref =  FirebaseStorage.instance.ref().child('user/$namaFile');
-                            await ref.putData(_image!);
-                            String downloadUrl = await FirebaseStorage.instance.ref().child('user/$namaFile').getDownloadURL();
-                            print(downloadUrl);
-                            await data.tambahDataKeFirestore(_username.text, _email.text, _pass.text, downloadUrl);
-                            data.findDocumentIDByFieldValue();
+              SizedBox(height: 50),
+               ElevatedButton(
+                        onPressed: () async {
+                          if(_pass.text == _conpass.text){
+                          if (data.userAuth != null){
+                          final ref =  FirebaseStorage.instance.ref().child('user/$namaFile');
+                          await ref.putData(_image!);
+                          String downloadUrl = await FirebaseStorage.instance.ref().child('user/$namaFile').getDownloadURL();
+                          print(downloadUrl);
+                          await users.doc(data.idlogin).update({'fullname': _username.text, 'pass': _pass.text, 'urlPoto':downloadUrl});
+                          Navigator.pushNamed(context, '/bottomnav2');
 
-                             print(data.idsignup + "ggg");
-
-                            Navigator.pushNamed(context, "/userprofile");
-                            _username.dispose();
-                            _email.dispose();
-                            _pass.dispose();
-                            _conpass.dispose();
-                          }
+                          // Navigator.push(context, 
+                          // MaterialPageRoute(builder: (context) => const bottomnav(2)));
+                        
                         }
-                          
-                        //  print(SignUpPage().data);
-                         
                          
                       }
-                      setState(() {
-
-                      });
-                      
-                    },
-                    child: Row(
-                      children: [
-                        Text(
-                          'Continue To Sign Up',
+                        },
+                        style: ElevatedButton.styleFrom(
+                            backgroundColor: Color(0xFF7015A8),
+                            padding:
+                                EdgeInsets.symmetric(horizontal: 90, vertical: 10),
+                            elevation: 10),
+                        child: Text(
+                          "Update Now",
                           style: TextStyle(
-                              color: Color.fromARGB(255, 163, 64, 166)),
+                            fontSize: 18,
+                            fontFamily: 'Railway',
+                            color: Colors.white,
+                            shadows: [
+                              Shadow(
+                                color: Colors.black,
+                                offset: Offset(1, 1),
+                                blurRadius: 5,
+                              ),
+                            ],
+                          ),
                         ),
-                        Icon(
-                          Icons.arrow_circle_right,
-                          size: 35,
-                          color: Color.fromARGB(255, 163, 64, 166),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
+                      ),
+             
             ],
           ),
         ),

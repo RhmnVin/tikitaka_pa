@@ -34,9 +34,13 @@ class _successtopupState extends State<successtopup> {
             Text("You have successfully",style: TextStyle(color: Colors.white,fontSize: 20,fontWeight: FontWeight.normal)),
             Text("feed your wallet",style: TextStyle(color: Colors.white,fontSize: 20,fontWeight: FontWeight.normal)),
             Padding(padding: EdgeInsets.only(top: 100)),
-            ElevatedButton(onPressed: (){}, child: Text("MyWallet",style: TextStyle(color: Colors.white),),style: ElevatedButton.styleFrom(backgroundColor: Color(0xFF6650CA),padding: EdgeInsets.symmetric(horizontal: 70,vertical: 15)),),
+            ElevatedButton(onPressed: (){
+              Navigator.pushNamed(context, '/mywallet');
+            }, child: Text("MyWallet",style: TextStyle(color: Colors.white),),style: ElevatedButton.styleFrom(backgroundColor: Color(0xFF6650CA),padding: EdgeInsets.symmetric(horizontal: 70,vertical: 15)),),
             SizedBox(height: 20,),
-            Text("Back to Home",style: TextStyle(color: Color(0xFFAEAEAE))),
+            TextButton( onPressed: () {
+              Navigator.pushNamed(context, '/bottomnav');
+            }, child: Text("Back to Home",style: TextStyle(color: Color(0xFFAEAEAE)))),
           ],
 
           

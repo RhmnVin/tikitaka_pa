@@ -1,4 +1,9 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:utsmobile/page/signup.dart';
+
+import '../Olah_data.dart';
 
 void main() {
   runApp(MyApp());
@@ -24,17 +29,33 @@ class _UserProfilePageState extends State<UserProfilePage> {
   bool isEnglishSelected = false;
   bool isFrenchSelected = false;
   bool isJapaneseSelected = false;
+  List <String> bahasa = [];
+  List <String> genre = [];
 
+  var bahasas = "";
+  var genree = "";
+
+
+
+  
+  
   @override
   Widget build(BuildContext context) {
+  // var dataID = data.getID();
+  FirebaseFirestore db = FirebaseFirestore.instance;
+  CollectionReference users = db.collection("users");
+  final data = Provider.of<olahData>(context, listen: false);
+
+
+
     return Scaffold(
       appBar: AppBar(
         leading: InkWell(
-            onLongPress: () {},
+            onTap: () {},
             child: Container(
               width: 100,
               child: Image.asset(
-                "assets/back.png",
+                "asset/back.png",
               ),
             )),
         titleSpacing: 50,
@@ -90,24 +111,34 @@ class _UserProfilePageState extends State<UserProfilePage> {
                         SizedBox(
                           width: 32,
                         ),
-                        Container(
-                          child: Image.asset(""),
-                          height: 80,
-                          width: 140,
-                          decoration: BoxDecoration(
-                              color: Colors.grey,
-                              borderRadius: BorderRadius.circular(20)),
+                        InkWell(
+                          onTap: () {
+                            genre.add("war");
+                          },
+                          child: Container(
+                            child: Image.asset("asset/war.jpg", fit: BoxFit.cover,),
+                            height: 80,
+                            width: 140,
+                            decoration: BoxDecoration(
+                                color: Colors.grey,
+                                borderRadius: BorderRadius.circular(20)),
+                          ),
                         ),
                         SizedBox(
                           width: 10,
                         ),
-                        Container(
-                          child: Image.asset(""),
-                          height: 80,
-                          width: 140,
-                          decoration: BoxDecoration(
-                              color: Colors.grey,
-                              borderRadius: BorderRadius.circular(20)),
+                        InkWell(
+                          onTap: () {
+                             genre.add("drama");
+                          },
+                          child: Container(
+                            child: Image.asset("asset/band.jpg", fit: BoxFit.cover),
+                            height: 80,
+                            width: 140,
+                            decoration: BoxDecoration(
+                                color: Colors.grey,
+                                borderRadius: BorderRadius.circular(20)),
+                          ),
                         ),
                       ],
                     )
@@ -125,24 +156,34 @@ class _UserProfilePageState extends State<UserProfilePage> {
                         SizedBox(
                           width: 32,
                         ),
-                        Container(
-                          child: Image.asset(""),
-                          height: 80,
-                          width: 140,
-                          decoration: BoxDecoration(
-                              color: Colors.grey,
-                              borderRadius: BorderRadius.circular(20)),
+                        InkWell(
+                          onTap: () {
+                             genre.add("horor");
+                          },
+                          child: Container(
+                            child: Image.asset("asset/chucky1.png", fit: BoxFit.cover),
+                            height: 80,
+                            width: 140,
+                            decoration: BoxDecoration(
+                                color: Colors.grey,
+                                borderRadius: BorderRadius.circular(20)),
+                          ),
                         ),
                         SizedBox(
                           width: 10,
                         ),
-                        Container(
-                          child: Image.asset(""),
-                          height: 80,
-                          width: 140,
-                          decoration: BoxDecoration(
-                              color: Colors.grey,
-                              borderRadius: BorderRadius.circular(20)),
+                        InkWell(
+                          onTap: () {
+                             genre.add("Fantasi");
+                          },
+                          child: Container(
+                            child: Image.asset("asset/thomas.jpg", fit: BoxFit.cover),
+                            height: 80,
+                            width: 140,
+                            decoration: BoxDecoration(
+                                color: Colors.grey,
+                                borderRadius: BorderRadius.circular(20)),
+                          ),
                         ),
                       ],
                     )
@@ -160,24 +201,34 @@ class _UserProfilePageState extends State<UserProfilePage> {
                         SizedBox(
                           width: 32,
                         ),
-                        Container(
-                          child: Image.asset(""),
-                          height: 80,
-                          width: 140,
-                          decoration: BoxDecoration(
-                              color: Colors.grey,
-                              borderRadius: BorderRadius.circular(20)),
+                        InkWell(
+                          onTap: () {
+                             genre.add("cinema");
+                          },
+                          child: Container(
+                            child: Image.asset("asset/movies.png", fit: BoxFit.cover),
+                            height: 80,
+                            width: 140,
+                            decoration: BoxDecoration(
+                                color: Colors.grey,
+                                borderRadius: BorderRadius.circular(20)),
+                          ),
                         ),
                         SizedBox(
                           width: 10,
                         ),
-                        Container(
-                          child: Image.asset(""),
-                          height: 80,
-                          width: 140,
-                          decoration: BoxDecoration(
-                              color: Colors.grey,
-                              borderRadius: BorderRadius.circular(20)),
+                        InkWell(
+                          onTap: () {
+                             genre.add("romen");
+                          },
+                          child: Container(
+                            child: Image.asset("asset/Cinderella or Monster.jpg", fit: BoxFit.cover),
+                            height: 80,
+                            width: 140,
+                            decoration: BoxDecoration(
+                                color: Colors.grey,
+                                borderRadius: BorderRadius.circular(20)),
+                          ),
                         ),
                       ],
                     )
@@ -214,7 +265,18 @@ class _UserProfilePageState extends State<UserProfilePage> {
                   children: [
                     TextButton(
                       onPressed: () {
-                        // Navigasi ke halaman konfirmasi.
+                        for(var bahasass in bahasa){
+                          bahasas = bahasas + '$bahasass, ';
+                          
+
+                        }
+                        for(var genreek in genre){
+                          genree = genree + '$genreek, ';
+                          
+
+                        }
+                         users.doc(data.idsignup).update({'bahasa': bahasas, 'genre': genree});
+                         Navigator.pushNamed(context, "/confirm");
                       },
                       child: Row(
                         children: [
@@ -279,15 +341,19 @@ class _UserProfilePageState extends State<UserProfilePage> {
             switch (language) {
               case 'Indonesian':
                 isIndonesianSelected = value!;
+                bahasa.add("Indonesian");
                 break;
               case 'English':
                 isEnglishSelected = value!;
+                bahasa.add("English");
                 break;
               case 'French':
                 isFrenchSelected = value!;
+                bahasa.add("French");
                 break;
               case 'Japanese':
                 isJapaneseSelected = value!;
+                bahasa.add("Japanese");
                 break;
             }
           });

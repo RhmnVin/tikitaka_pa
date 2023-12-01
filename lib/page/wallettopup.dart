@@ -1,4 +1,9 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:utsmobile/WalletProvider.dart';
+
+import '../Olah_data.dart';
 
 class wallettopup extends StatefulWidget {
   const wallettopup({super.key});
@@ -8,12 +13,23 @@ class wallettopup extends StatefulWidget {
 }
 
 class _wallettopupState extends State<wallettopup> {
+  final TextEditingController _saldo = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
+     final data = Provider.of<olahData>(context, listen: false);
+     final walletProvider = Provider.of<Wallets>(context, listen: false);
+
+    FirebaseFirestore db = FirebaseFirestore.instance;
+    CollectionReference users = db.collection("users");
     return Scaffold(
       appBar: AppBar(
         leading: InkWell(
-          onLongPress: () {},
+          onTap: () {
+            Navigator.pushNamed(context, '/mywallet');
+            
+            
+          },
           child: Image.asset("asset/back.png"),
         ),
         titleSpacing: 90,
@@ -28,7 +44,7 @@ class _wallettopupState extends State<wallettopup> {
         children: [
           Container(
             width: 360,
-                height: 660,
+                height: 750,
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
                     begin: Alignment.topCenter,
@@ -51,6 +67,7 @@ class _wallettopupState extends State<wallettopup> {
                   Padding(
                     padding: EdgeInsets.symmetric(vertical: 1),
                     child: TextField(
+                      controller: _saldo,
                       style: TextStyle(color: Colors.white),
                       onChanged: (value) {},
                       decoration: InputDecoration(
@@ -78,7 +95,9 @@ class _wallettopupState extends State<wallettopup> {
                     Column(
                       children: [
                         InkWell(
-                          onTap: (){},
+                          onTap: (){
+                            _saldo.text = "50000";
+                          },
                           child: Container(
                             width: 120,height: 70,decoration: BoxDecoration(color: Color(0xFF463E99),borderRadius: BorderRadius.circular(15),border: Border.all(color: Color(0xFF7EE9FF),width: 2)),
                             child: Column(
@@ -94,7 +113,7 @@ class _wallettopupState extends State<wallettopup> {
                         InkWell(
                           onTap: (){
                             setState(() {
-                              Navigator.pushNamed(context, 'myticket');
+                               _saldo.text = "100000";
                             });
                           },
                           child: Container(
@@ -110,7 +129,9 @@ class _wallettopupState extends State<wallettopup> {
                         ),
                         SizedBox(height: 10,),
                         InkWell(
-                          onTap: (){},
+                          onTap: (){
+                             _saldo.text = "300000";
+                          },
                           child: Container(
                             width: 120,height: 70,decoration: BoxDecoration(color: Color(0xFF463E99),borderRadius: BorderRadius.circular(15),border: Border.all(color: Color(0xFF7EE9FF),width: 2)),
                             child: Column(
@@ -124,7 +145,9 @@ class _wallettopupState extends State<wallettopup> {
                         ),
                         SizedBox(height: 10,),
                         InkWell(
-                          onTap: (){},
+                          onTap: (){
+                             _saldo.text = "1000000";
+                          },
                           child: Container(
                             width: 120,height: 70,decoration: BoxDecoration(color: Color(0xFF463E99),borderRadius: BorderRadius.circular(15),border: Border.all(color: Color(0xFF7EE9FF),width: 2)),
                             child: Column(
@@ -138,7 +161,9 @@ class _wallettopupState extends State<wallettopup> {
                         ),
                         SizedBox(height: 10,),
                         InkWell(
-                          onTap: (){},
+                          onTap: (){
+                             _saldo.text = "2000000";
+                          },
                           child: Container(
                             width: 120,height: 70,decoration: BoxDecoration(color: Color(0xFF463E99),borderRadius: BorderRadius.circular(15),border: Border.all(color: Color(0xFF7EE9FF),width: 2)),
                             child: Column(
@@ -158,7 +183,9 @@ class _wallettopupState extends State<wallettopup> {
                     Column(
                       children: [
                         InkWell(
-                          onTap: (){},
+                          onTap: (){
+                             _saldo.text = "75000";
+                          },
                           child: Container(
                             width: 120,height: 70,decoration: BoxDecoration(color: Color(0xFF463E99),borderRadius: BorderRadius.circular(15),border: Border.all(color: Color(0xFF7EE9FF),width: 2)),
                             child: Column(
@@ -172,7 +199,9 @@ class _wallettopupState extends State<wallettopup> {
                         ),
                         SizedBox(height: 10,),
                         InkWell(
-                          onTap: (){},
+                          onTap: (){
+                             _saldo.text = "200000";
+                          },
                           child: Container(
                             width: 120,height: 70,decoration: BoxDecoration(color: Color(0xFF463E99),borderRadius: BorderRadius.circular(15),border: Border.all(color: Color(0xFF7EE9FF),width: 2)),
                             child: Column(
@@ -186,7 +215,9 @@ class _wallettopupState extends State<wallettopup> {
                         ),
                         SizedBox(height: 10,),
                         InkWell(
-                          onTap: (){},
+                          onTap: (){
+                             _saldo.text = "500000";
+                          },
                           child: Container(
                             width: 120,height: 70,decoration: BoxDecoration(color: Color(0xFF463E99),borderRadius: BorderRadius.circular(15),border: Border.all(color: Color(0xFF7EE9FF),width: 2)),
                             child: Column(
@@ -200,7 +231,9 @@ class _wallettopupState extends State<wallettopup> {
                         ),
                         SizedBox(height: 10,),
                         InkWell(
-                          onTap: (){},
+                          onTap: (){
+                             _saldo.text = "1500000";
+                          },
                           child: Container(
                             width: 120,height: 70,decoration: BoxDecoration(color: Color(0xFF463E99),borderRadius: BorderRadius.circular(15),border: Border.all(color: Color(0xFF7EE9FF),width: 2)),
                             child: Column(
@@ -214,7 +247,9 @@ class _wallettopupState extends State<wallettopup> {
                         ),
                         SizedBox(height: 10,),
                         InkWell(
-                          onTap: (){},
+                          onTap: (){
+                             _saldo.text = "2500000";
+                          },
                           child: Container(
                             width: 120,height: 70,decoration: BoxDecoration(color: Color(0xFF463E99),borderRadius: BorderRadius.circular(15),border: Border.all(color: Color(0xFF7EE9FF),width: 2)),
                             child: Column(
@@ -228,11 +263,44 @@ class _wallettopupState extends State<wallettopup> {
                         ),
                       ],
                     ),
-                  ],)
+                  ],),
+
+                   Padding(padding: EdgeInsets.symmetric(vertical: 20)),
+                    ElevatedButton(
+                    onPressed: ()  async {
+                    dynamic saldo_awal = await data.getFieldById("saldo", data.idlogin);
+                    print(saldo_awal.toString());
+                    await users.doc(data.idlogin).update({'saldo': int.parse(_saldo.text)+saldo_awal});
+                    await walletProvider.tambahDataWalletKeFirestore(data.idlogin, "Top Up", int.parse(_saldo.text), '22 November 2023', '10.00', '');
+
+                      Navigator.pushNamed(context, "/successtopup");
+                    },
+                    style: ElevatedButton.styleFrom(
+                        backgroundColor: Color(0xFF7015A8),
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 90, vertical: 20),
+                        elevation: 10),
+                    child: Text(
+                      "Top Up Now",
+                      style: TextStyle(
+                        fontSize: 15,
+                        fontFamily: 'Railway',
+                        color: Colors.white,
+                        shadows: [
+                          Shadow(
+                            color: Colors.black,
+                            offset: Offset(1, 1),
+                            blurRadius: 5,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
                 ],
               ),
             ),
-          )
+            
+          ),
         ],
       ),
     );

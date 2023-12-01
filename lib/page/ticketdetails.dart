@@ -1,6 +1,14 @@
 import 'dart:ui';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:utsmobile/Booking_provider.dart';
+import 'package:utsmobile/Olah_data.dart';
+import 'package:utsmobile/models/booking.dart';
+
+import '../api.dart';
+import '../models/movie.dart';
 
 class ticketdetails extends StatefulWidget {
   const ticketdetails({super.key});
@@ -12,12 +20,22 @@ class ticketdetails extends StatefulWidget {
 class _ticketdetailsState extends State<ticketdetails> {
   @override
   Widget build(BuildContext context) {
+    
+    final book = Provider.of<Bookingg>(context, listen: false);
+    final data = Provider.of<olahData>(context, listen: false);
+
+    final Booking bookMy = book.myMovieDetail;
+
     return Scaffold(
       appBar: AppBar(
         
-        leading: InkWell(onLongPress: (){},child: Image.asset("asset/back.png"),),
+        leading: InkWell(onTap: (){
+          // Navigator.pushNamed(context, '/myticket');
+          Navigator.pushNamed(context, '/bottomnav1');
+
+        },child: Image.asset("asset/back.png"),),
         titleSpacing: 50,
-        title: Text("Ticket Details",style: TextStyle(
+        title: Text("Ticket",style: TextStyle(
                                   color: Colors.white,
                                   fontSize: 25,
                                   fontWeight: FontWeight.bold),
@@ -43,11 +61,11 @@ class _ticketdetailsState extends State<ticketdetails> {
               children: [
                 Padding(padding: EdgeInsets.symmetric(horizontal: 20,vertical: 40),
                     child: Container(
-                      child: Image.asset("asset/chucky1.png"),
+                      child: Image.network(bookMy.posterUrl),
                     ),),
                 Padding(
                   padding: EdgeInsets.only(left: 25),
-                  child: Text("Crazy Chucky One",style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold,fontSize: 20,),),
+                  child: Text(bookMy.judul_film,style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold,fontSize: 20,),),
                 ),
                 Padding(padding: EdgeInsets.only(left: 25),child: Text("Horor",style: TextStyle(color: Colors.white),),),
                 Padding(
@@ -76,9 +94,9 @@ class _ticketdetailsState extends State<ticketdetails> {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
-                        Padding(padding: EdgeInsets.only(left: 0),child: Text("CGV Samarinda plaza mall",style: TextStyle(color: Colors.white),),),
-                        Padding(padding: EdgeInsets.only(left: 0),child: Text("September 21, 12:06",style: TextStyle(color: Colors.white),),),
-                        Padding(padding: EdgeInsets.only(left: 0),child: Text("D7",style: TextStyle(color: Colors.white),),)
+                        Padding(padding: EdgeInsets.only(left: 0),child: Text(bookMy.tempat,style: TextStyle(color: Colors.white),),),
+                        Padding(padding: EdgeInsets.only(left: 0),child: Text('${bookMy.tanggal}, ${bookMy.waktu}',style: TextStyle(color: Colors.white),),),
+                        Padding(padding: EdgeInsets.only(left: 0),child: Text(bookMy.kursi,style: TextStyle(color: Colors.white),),)
                       ],
                     ),
                   ],
@@ -91,9 +109,15 @@ class _ticketdetailsState extends State<ticketdetails> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Padding(padding: EdgeInsets.only(left: 0),child: Text("Name",style: TextStyle(color: Colors.white),),),
-                        Padding(padding: EdgeInsets.only(left: 0),child: Text("Malik Ibrahim",style: TextStyle(color: Colors.white),),),
+                        Padding(padding: EdgeInsets.only(left: 0),
+                        child: StreamBuilder<DocumentSnapshot>(
+                          stream: data.users.doc(data.idlogin).snapshots(),
+                          builder: (context, snapshot) {
+                            return Text(snapshot.data!.get("fullname"),style: TextStyle(color: Colors.white),);
+                          }
+                        ),),
                         Padding(padding: EdgeInsets.only(left: 0),child: Text("Price",style: TextStyle(color: Colors.white),),),
-                        Padding(padding: EdgeInsets.only(left: 0),child: Text("Rp 50.000",style: TextStyle(color: Colors.white),),),
+                        Padding(padding: EdgeInsets.only(left: 0),child: Text(bookMy.total_tiket.toString(),style: TextStyle(color: Colors.white, fontSize: 15, fontWeight: FontWeight.bold),),),
                         Padding(padding: EdgeInsets.only(left: 0),child: Text("ID Order",style: TextStyle(color: Colors.white),),),
                       ],
                     ),
@@ -102,7 +126,7 @@ class _ticketdetailsState extends State<ticketdetails> {
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
                         Container(child: Image.asset("asset/qr.png"),),   
-                        Padding(padding: EdgeInsets.only(left: 0),child: Text("xxxxxxxxxxxxxxx",style: TextStyle(color: Colors.white),),),                                   
+                        Padding(padding: EdgeInsets.only(left: 0),child: Text(bookMy.id_order,style: TextStyle(color: Colors.white),),),                                   
                         ],
         
                     ),

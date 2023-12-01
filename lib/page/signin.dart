@@ -1,34 +1,43 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
-void main() {
-  runApp(MyApp());
-}
+import '../Olah_data.dart';
 
-class MyApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      home: SignInPage(),
-    );
-  }
-}
 
 class SignInPage extends StatefulWidget {
+  const SignInPage({super.key});
+
+
+
   @override
   _SignInPageState createState() => _SignInPageState();
 }
 
 class _SignInPageState extends State<SignInPage> {
+  final TextEditingController _email = TextEditingController();
+  final TextEditingController _pass = TextEditingController();
+
+
+  @override
+  void initState() {
+    super.initState();
+    // Lakukan inisialisasi atau langganan sumber daya di sini
+  }
+
+  @override
+  void dispose() {
+    // Lakukan tindakan bersih di sini
+    _email.dispose(); 
+    _pass.dispose();
+    super.dispose(); 
+  }
+
   @override
   Widget build(BuildContext context) {
+    final data = Provider.of<olahData>(context, listen: false);
+
     return Scaffold(
-      appBar: AppBar(
-        leading: InkWell(
-          onLongPress: () {},
-          child: Image.asset("assets/back.png"),
-        ),
-        backgroundColor: Color.fromARGB(255, 149, 0, 194),
-      ),
+      
       body: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
@@ -80,6 +89,7 @@ class _SignInPageState extends State<SignInPage> {
                             fontSize: 16,
                             color: Colors.white)), // Atur warna teks
                     TextFormField(
+                      controller: _email,
                       decoration: InputDecoration(
                         hintText: 'Type Here',
                         hintStyle:
@@ -95,6 +105,7 @@ class _SignInPageState extends State<SignInPage> {
                             fontSize: 16,
                             color: Colors.white)), // Atur warna teks
                     TextFormField(
+                      controller: _pass,
                       decoration: InputDecoration(
                         hintText: 'Type Here',
                         hintStyle:
@@ -112,8 +123,34 @@ class _SignInPageState extends State<SignInPage> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   TextButton(
-                    onPressed: () {
-                      // Navigasi ke halaman sign in.
+                    onPressed: () async {
+                       setState(() {
+                        // dispose();
+                      });
+                      
+                      await data.login(_email.value.text, _pass.value.text);
+                      print(data.userAuth!.email);
+                          if (data.userAuth != null){
+
+                            if(data.userAuth!.email == _email.text){
+                             await data.findDocumentIDByFieldValue();
+                              print(data.idlogin);
+                                Navigator.pushNamed(context, "/bottomnav");
+                                _email.dispose();
+                                _pass.dispose();
+                                
+                  
+                            }
+                            else{
+                              
+                              await data.signOut();
+
+                            }
+                            
+                
+                             
+                          }
+                     
                     },
                     child: Row(
                       children: [
@@ -136,6 +173,8 @@ class _SignInPageState extends State<SignInPage> {
                 children: [
                   TextButton(
                     onPressed: () {
+                      Navigator.pushNamed(context, "/signup");
+
                       // Navigasi ke halaman pendaftaran baru.
                     },
                     child: Text('Create New Account',

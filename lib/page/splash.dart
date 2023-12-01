@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
-class SplashScreen extends StatefulWidget {
-  @override
-  _SplashScreenState createState() => _SplashScreenState();
-}
+import '../Olah_data.dart';
 
-class _SplashScreenState extends State<SplashScreen> {
+class SplashScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final data = Provider.of<olahData>(context, listen: false);
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Color.fromARGB(255, 149, 0, 194),
+        automaticallyImplyLeading: false,
       ),
       body: Container(
         decoration: BoxDecoration(
@@ -53,6 +53,9 @@ class _SplashScreenState extends State<SplashScreen> {
               SizedBox(height: 70),
               ElevatedButton(
                 onPressed: () {
+                  data.signOut();
+                  Navigator.pushNamed(context, "/signup");
+
                   // Navigasi ke halaman selanjutnya
                 },
                 style: ButtonStyle(
@@ -66,6 +69,9 @@ class _SplashScreenState extends State<SplashScreen> {
               SizedBox(height: 10),
               TextButton(
                 onPressed: () {
+                  data.signOut();
+                  Navigator.pushNamed(context, "/signin");
+
                   // Navigasi ke halaman login.
                 },
                 child: Text(

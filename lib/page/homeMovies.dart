@@ -1,32 +1,32 @@
 // ignore_for_file: prefer_const_literals_to_create_immutables, prefer_const_constructors
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:utsmobile/komponen/homeMoviesTile.dart';
 
-class homeMovies extends StatefulWidget {
-  const homeMovies({super.key});
+import '../Olah_data.dart';
+import '../api.dart';
+import '../models/movie.dart';
 
-  @override
-  State<homeMovies> createState() => _homeMoviesState();
-}
+class homeMovies extends StatelessWidget {
+   homeMovies({super.key});
 
-class Movies {
-  String gambar;
-
-  Movies({
-    required this.gambar,
-  });
-}
-
-class _homeMoviesState extends State<homeMovies> {
   List daftarMovies = [
-    Movies(gambar: "assets/pp9.jpg"),
-    Movies(gambar: "assets/pp10.jpg"),
-    Movies(gambar: "assets/pp11.jpg"),
-    Movies(gambar: "assets/pp12.jpeg")
+    Movies(gambar: "asset/pp9.jpg"),
+    Movies(gambar: "asset/pp10.jpg"),
+    Movies(gambar: "asset/pp11.jpg"),
+    Movies(gambar: "asset/pp12.jpeg")
   ];
+
+  
+
   @override
   Widget build(BuildContext context) {
+    final data = Provider.of<olahData>(context, listen: false);
+    final tmdbApi = Provider.of<TmdbApi>(context, listen: false);
+    
+    var id = data.idlogin;
     return Scaffold(
       backgroundColor: Colors.transparent,
       body: Container(
@@ -47,26 +47,46 @@ class _homeMoviesState extends State<homeMovies> {
               padding: EdgeInsets.symmetric(vertical: 20, horizontal: 10),
               child: Row(
                 children: [
-                  CircleAvatar(
-                    backgroundImage: AssetImage('assets/pp2.jpeg'),
-                    radius: 30,
+                  StreamBuilder<DocumentSnapshot>(
+                    stream: data.users.doc(id).snapshots(),
+                    builder: (_, snapshot) {
+                      return InkWell(
+                        onTap: () {
+                          print(snapshot.data!.get("urlPoto"));
+                        },
+                        child: CircleAvatar(
+                          backgroundImage: NetworkImage(snapshot.data!.get("urlPoto")),
+                          radius: 30,
+                        ),
+                      );
+                    }
                   ),
                   SizedBox(width: 10),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('Malik Ibrahim',
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontFamily: 'Railway',
-                            color: Colors.white,
-                          )),
-                      Text('IDR 99.999',
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontFamily: 'Railway',
-                            color: Colors.white,
-                          )),
+                     StreamBuilder<DocumentSnapshot>(
+                        stream: data.users.doc(id).snapshots(),
+                        builder: (_, snapshot) {
+                       return Text(snapshot.data!.get("fullname"),
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontFamily: 'Railway',
+                                color: Colors.white,
+                              ));
+                        }
+                      ),
+                      StreamBuilder<DocumentSnapshot>(
+                        stream: data.users.doc(id).snapshots(),
+                        builder: (_, snapshot) {
+                          return Text('Rp.'+ snapshot.data!.get("saldo").toString(),
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontFamily: 'Railway',
+                                color: Colors.white,
+                              ));
+                        }
+                      ),
                     ],
                   ),
                 ],
@@ -96,20 +116,35 @@ class _homeMoviesState extends State<homeMovies> {
             SizedBox(
               height: 15,
             ),
-            Container(
-              height: 130,
-              width: 250,
-              child: Expanded(
-                child: ListView.builder(
-                    scrollDirection: Axis.horizontal,
-                    itemCount: daftarMovies.length,
-                    itemBuilder: (context, index) {
-                      return homeMoviesTile(
-                        movies: daftarMovies[index],
-                      );
-                    }),
+            FutureBuilder(
+                 future: tmdbApi.fetchNowPlayingMovies(),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                return CircularProgressIndicator();
+                  } else if (snapshot.hasError) {
+                    return Text('Error: ${snapshot.error}');
+                  } else {
+                  List<Movie> movies = snapshot.data!;
+                  return Container(
+                      height: 130,
+                      width: 250,
+                      child: Expanded(
+                        child: ListView.builder(
+                            scrollDirection: Axis.horizontal,
+                            itemCount: movies.length,
+                            itemBuilder: (context, index) {
+                              return homeMoviesTile(
+                                  movies: movies[index],
+                            );
+                            }),
+                      ),
+                    
+                  );
+                }
+                }
               ),
-            ),
+            
+  
             const SizedBox(height: 50),
             Padding(
               padding: EdgeInsets.symmetric(vertical: 0, horizontal: 20),
@@ -277,31 +312,49 @@ class _homeMoviesState extends State<homeMovies> {
               ]),
             ),
             SizedBox(height: 10),
-            Container(
-              height: 130,
-              width: 250,
-              child: Expanded(
-                child: ListView.builder(
-                    scrollDirection: Axis.horizontal,
-                    itemCount: daftarMovies.length,
-                    itemBuilder: (context, index) {
-                      return homeMoviesTile(
-                        movies: daftarMovies[index],
-                      );
-                    }),
-              ),
+            FutureBuilder(
+            future: tmdbApi.fetchComingSoonMovies(),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return CircularProgressIndicator();
+                } else if (snapshot.hasError) {
+                  return Text('Error: ${snapshot.error}');
+                } else {
+              List<Movie> movies = snapshot.data!;
+                return Container(
+                  height: 130,
+                  width: 250,
+                  child: Expanded(
+                    child: ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                        itemCount: movies.length,
+                        itemBuilder: (context, index) {
+                          return homeMoviesTile(
+                            movies: movies[index],
+                          );
+                        }),
+                  ),
+                );
+              }
+            }
             ),
             SizedBox(
               height: 70,
             ),
             Container(
               decoration: BoxDecoration(
-                color: Colors.grey[100],
+                
+                color: Colors.black,
                 borderRadius: BorderRadius.circular(5),
+                image: DecorationImage(
+                  image: AssetImage('asset/diskon.jpg'), // Ganti dengan path gambar Anda
+                  fit: BoxFit.cover,
+                ),
               ),
-              margin: const EdgeInsets.only(left: 25),
+              margin: const EdgeInsets.only(left: 20, right: 20),
               padding: const EdgeInsets.all(25),
               height: 120,
+              // child: Image.asset("asset/diskon.jpg", fit: BoxFit.cover,),
             ),
             SizedBox(
               height: 80,
@@ -309,27 +362,15 @@ class _homeMoviesState extends State<homeMovies> {
           ],
         ),
       ),
-      bottomNavigationBar: BottomNavigationBar(
-          backgroundColor: Color(0xFF230051),
-          selectedItemColor: Colors.deepPurple,
-          unselectedItemColor: Colors.blueAccent,
-          items: const [
-            BottomNavigationBarItem(
-              icon: Icon(
-                Icons.local_movies,
-                color: Colors.deepPurple,
-              ),
-              label: 'Movies',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.local_movies, color: Colors.blueAccent),
-              label: 'Ticket',
-            ),
-            BottomNavigationBarItem(
-                icon: Icon(Icons.supervised_user_circle_rounded,
-                    color: Colors.blueAccent),
-                label: 'Profile'),
-          ]),
+     
     );
   }
+}
+
+class Movies {
+  String gambar;
+
+  Movies({
+    required this.gambar,
+  });
 }

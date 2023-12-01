@@ -36,7 +36,7 @@ class _SuccessCheckoutPageState extends State<SuccessCheckoutPage> {
                 child: Column(
                   children: [
                     Image.asset(
-                      'assets/logo1_checkoutsuccess.png',
+                      'asset/logo1_checkoutsuccess.png',
                       height: 170,
                     ),
                     SizedBox(
@@ -62,7 +62,11 @@ class _SuccessCheckoutPageState extends State<SuccessCheckoutPage> {
                       height: 100,
                     ),
                     ElevatedButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          // Navigator.pushNamed(context, '/myticket');
+                        Navigator.pushNamed(context, '/bottomnav1');
+
+                        },
                         style: ElevatedButton.styleFrom(
                             backgroundColor: Color(0xFF7015A8),
                             padding: EdgeInsets.symmetric(
@@ -88,6 +92,7 @@ class _SuccessCheckoutPageState extends State<SuccessCheckoutPage> {
                     ),
                     InkWell(
                       onTap: () {
+                        Navigator.pushNamed(context, '/bottomnav');
                       },
                       child: Text(
                         "Back to Home",

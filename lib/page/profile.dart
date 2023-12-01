@@ -1,4 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import '../Olah_data.dart';
 
 class profile extends StatefulWidget {
   const profile({super.key});
@@ -10,11 +14,14 @@ class profile extends StatefulWidget {
 class _profileState extends State<profile> {
   @override
   Widget build(BuildContext context) {
+    final data = Provider.of<olahData>(context, listen: false);
+    // final tmdbApi = Provider.of<TmdbApi>(context, listen: false);
+    final String id = data.idlogin;
     return Scaffold(
       body: Container(
         padding: EdgeInsets.only(top: 20),
         width: 360,
-        height: 660,
+        // height: 660,
         decoration: BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topCenter,
@@ -27,24 +34,48 @@ class _profileState extends State<profile> {
         ),
         child: Column(
           children: [
-            Container(
-              padding: EdgeInsets.only(top: 50),
-              width: 120,
-              decoration:
-                  BoxDecoration(borderRadius: BorderRadius.circular(100)),
-              child: Image.asset("asset/profilepic.png"),
+            StreamBuilder<DocumentSnapshot>(
+              stream: data.users.doc(id).snapshots(),
+              builder: (_, snapshot) {
+                return Container(
+                  padding: EdgeInsets.only(top: 50),
+                  width: 80,
+                  height: 80,
+                  decoration:
+                      BoxDecoration(borderRadius: BorderRadius.circular(100),
+                      image: DecorationImage(
+                      image: NetworkImage(snapshot.data!.get("urlPoto")), // Ganti dengan path gambar Anda
+                      fit: BoxFit.cover,
+                    ),
+                      
+                      ),
+                      
+                      
+                  // child: Image.network(snapshot.data!.get("urlPoto"), fit: BoxFit.cover,),
+                );
+              }
             ),
             Padding(
               padding: EdgeInsets.symmetric(vertical: 10),
-              child: Text(
-                "MALIK IBRAHIM",
-                style: TextStyle(color: Colors.white),
+              child: StreamBuilder<DocumentSnapshot>(
+               stream: data.users.doc(id).snapshots(),
+                builder: (_, snapshot) {
+                  return Text(
+                    snapshot.data!.get("fullname"),
+                    style: TextStyle(color: Colors.white),
+                  );
+                }
               ),
             ),
             Padding(
               padding: EdgeInsets.only(bottom: 20),
-              child: Text("Malikibrahim08@gmail.com",
-                  style: TextStyle(color: Colors.white)),
+              child: StreamBuilder<DocumentSnapshot>(
+                stream: data.users.doc(id).snapshots(),
+                builder: (_, snapshot) {
+                  return Text(snapshot.data!.get("email"),
+                      style: TextStyle(color: Colors.white));
+                }
+              ),
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.start,
@@ -55,7 +86,9 @@ class _profileState extends State<profile> {
                   padding: EdgeInsets.only(left: 30),
                   
                   child: InkWell(
-                  onTap: () {},
+                  onTap: () {
+                    Navigator.pushNamed(context, '/editProfile');
+                  },
                   child: Text(
                     "Edit Profile",
                     style: TextStyle(color: Colors.white,fontSize: 20),
@@ -71,8 +104,14 @@ class _profileState extends State<profile> {
                 Image.asset("asset/Wallet.png"),
                 Padding(
                   padding: EdgeInsets.only(left: 30),
-                  child: Text("My Wallet",
-                      style: TextStyle(color: Colors.white, fontSize: 20)),
+                  
+                  child: InkWell(
+                     onTap: () {
+                    Navigator.pushNamed(context, '/mywallet');
+                  },
+                    child: Text("My Wallet",
+                        style: TextStyle(color: Colors.white, fontSize: 20)),
+                  ),
                 )
               ],
             ),
@@ -83,7 +122,7 @@ class _profileState extends State<profile> {
                 Image.asset("asset/bahasa.png"),
                 Padding(
                   padding: EdgeInsets.only(left: 30),
-                  child: Text("Edit Profile",
+                  child: Text("Bahasa",
                       style: TextStyle(color: Colors.white, fontSize: 20)),
                 )
               ],
